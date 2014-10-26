@@ -1,8 +1,14 @@
-WriteUp_PML
-===========
+## WriteUp - Practical Machine Learning
 
-WriteUp Project of Practical Machine Learning - Cousera
+This repository contains:
+- ** Datasets**: pml-training.csv and pml-testing.csv
+- [RMarkDown file](https://github.com/warderm6/WriteUp_PML/blob/master/PWriteUp.Rmd).
+- [MarkDown file](https://github.com/warderm6/WriteUp_PML/blob/master/PWriteUp.knit.md)
+- [Html File](http://htmlpreview.github.io/?https://github.com/warderm6/WriteUp_PML/blob/master/PWriteUp.html)
+- Complement files
 
-.md file: (https://github.com/warderm6/WriteUp_PML/blob/master/PWriteUp.knit.md)
++:heavy_exclamation_mark: TO visualize you can use:
 
-.html file: (http://htmlpreview.github.io/?https://github.com/warderm6/WriteUp_PML/blob/master/PWriteUp.html)
+* [MarkDown file](https://github.com/warderm6/WriteUp_PML/blob/master/PWriteUp.knit.md)
+* [Html File](http://htmlpreview.github.io/?https://github.com/warderm6/WriteUp_PML/blob/master/PWriteUp.html)
+
