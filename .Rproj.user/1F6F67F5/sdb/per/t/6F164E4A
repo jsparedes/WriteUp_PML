@@ -1,0 +1,22 @@
+{
+    "contents" : "",
+    "created" : 1414172155801.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "6F164E4A",
+    "lastKnownWriteTime" : 0,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "caption" : "predictedValues",
+        "contentUrl" : "content?title=predictedValues&file=87a907b3c69c4382ae65ce0f13f85a73.htm",
+        "displayedObservations" : 20,
+        "displayedVariables" : 1,
+        "totalObservations" : 20,
+        "variables" : 1
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

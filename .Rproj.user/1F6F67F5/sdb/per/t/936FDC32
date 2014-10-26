@@ -1,0 +1,22 @@
+{
+    "contents" : "",
+    "created" : 1414172290875.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "936FDC32",
+    "lastKnownWriteTime" : 1,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "caption" : "training",
+        "contentUrl" : "content?title=training&file=0822be935ea54a0399a8ec2b791e8117.htm",
+        "displayedObservations" : 1000,
+        "displayedVariables" : 54,
+        "totalObservations" : 19622,
+        "variables" : 54
+    },
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}

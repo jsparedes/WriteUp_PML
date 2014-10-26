@@ -1,0 +1,150 @@
+---
+title: "Project Writeup - Practical Machine Learning (Coursera)"
+author: "Jorge Salvador Paredes Merino"
+date: "Thursday, October 25, 2014"
+output:
+  html_document:
+    toc: yes
+---
+
+## 1. Dataset
+
+Source: [Human Activity Recognition (PUC-RIO)](http://groupware.les.inf.puc-rio.br/har)
+
+[Training](http://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv)
+
+[Testing](http://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv) (evaluated by Coursera System, we dont have labels of these results)
+
+## 2. Objectives
+Predict the manner in which a group of enthusiasts who take measurements about themselves did the exercise. This is the "classe" variable in the training set. You may use any of the other variables to predict with. You should create a report describing how you built your model, how you used cross validation, what you think the expected out of sample error is, and why you made the choices you did. 
+
+You will also use your prediction model to predict 20 different test cases ([Testing](http://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv)). For this reason, [Training](http://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv) will be splited to build the present Machine Learning Model in this report.
+
+## 3. Data Processing
+### 3.1. Loading or installing the required packages
+In this report are used r packages:
+
+- **mi** (to plot missing values with respect of dataset)
+- **caret** (to build machine learning model)
+
+With the following code, packages required will be loaded or installed in case you do not have them:
+
+```{r}
+packages = c("mi","caret")  # Here, add your required packages
+ipak <- function(pkg){                                          
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])] 
+  if (length(new.pkg))                                          
+    install.packages(new.pkg, dependencies = TRUE)              
+  sapply(pkg, require, character.only = TRUE)                   
+}
+
+ipak(packages)
+```
+
+### 3.2. Reading datasets
+
+```{r}
+file_training = "pml-training.csv"
+file_testing = "pml-testing.csv"
+
+training = read.csv(file_training, sep=",", header = TRUE, na.strings= c("NA",""," "), nrow=19622)
+testing = read.csv(file_testing, sep=",", header = TRUE, na.strings= c("NA",""," "), nrow=20)
+
+dim(training)
+dim(testing)
+```
+
+### 3.2. Cleaning datasets
+
+In the first instance, are removed attributes related to: timestam, X, usern_name, new_window:
+
+```{r}
+removeIndex = grep("timestamp|X|user_name|new_window",names(training));
+training = training[,-removeIndex];
+testing = testing[,-removeIndex];
+```
+
+To have a general overview about the dataset, we can take a look of missing values which are represented in red color, The folling picture (which is rotated) is a part of the dataset. Summary of the dataset is need complement the picture.
+
+```{r}
+missing.pattern.plot(training[1:200,2:80], ylab = "")
+summary(training)
+```
+
+We can see many missing values with a curious pattern. Attributes which have missing values present exactly 19216 each one. If we remove registers with missing values we will suffer huge losses in information decreasing from **19622** to **406** registres. 
+
+For this reason, we only delete the column attribute 
+which present `NA` (missing values).
+
+```{r}
+a = colSums(is.na(training))
+c = a!= 19216 # index of attributes to be remained
+filter_training = training[, c]
+filter_testing = testing[, c]
+
+summary(filter_training) # 
+
+# Our final predictors, with them we have to build our model:
+names(filter_training)
+names(filter_testing)
+```
+Doing this, we got a new dataset: 
+
+**New Training** => [19216x54]
+
+**New Testing** => [20x53], **problem_id** is not considered. It is used by Coursera to evaluated the prediction made by the model.
+
+At the beginning we have **159** attributes and now we have **52** to build the machine learning model. We can not use the testing set to eval our model, For this reason, it is necessary to split the training dataset into train and validation.
+
+## 4. Building Train and Validation datasets
+
+```{r}
+set.seed(25625)
+
+trainIndex = createDataPartition(filter_training$classe, p = .6,
+                                  list = FALSE,
+                                  times = 1)
+train = filter_training[trainIndex, ]
+validation = filter_training[-trainIndex, ]
+```
+
+## 5. Building Machine Learning Model
+
+In this part, we will build a **Random Forest** model:
+
+```{r, cache=TRUE}
+trControl = trainControl(method = "cv", number = 4, allowParallel  = TRUE)
+
+modelo_RF = train(classe ~., data = train, method="rf", trControl = trControl)
+```
+
+Evaluating the best model:
+
+```{r, cache=TRUE}
+validation$prediction = predict(modelo_RF$finalModel, newdata=validation)
+confusionMatrix(data=validation$prediction, validation$classe)
+```
+The model present a high accuracy as we can see (**99.5%**), nearly to 100%. The present model has an incredible performance in **Class A**. Even in the lowest **Class E**.
+
+```{r}
+plot(modelo_RF$finalModel, main="RF Cross-Validation")
+```
+
+Finally, we can look about the 20 more influencial variables in the model:
+
+```{r}
+RF_imp = varImp(modelo_RF, scale=FALSE)
+plot(RF_imp, top=20, main='Random Forest 20 Most important Variables')
+```
+
+## 6. Predicting Testing datasets
+
+```{r}
+predict(modelo_RF$finalModel, newdata=filter_testing[,-54])
+```
+
+
+## 7. Results
+
+Evaluating the prediction of **testing dataset** (reduced into 53 predictors) the results were got 20/20 (according Coursera System).
+Owing to small dataset and high accuracy of the model, it is understable to get 100% of accuracy in the **test dataset**.
